@@ -36,7 +36,10 @@ CREATE TABLE Café
 -- Cupping akce (ID, Název, Datum konání, Počet volných míst)
 
 
+-- Druh kávy nabízený na Cupping akci (Cena ochutnávky)
 
+
+-- Příkladová data
 INSERT INTO Café (Name, Address, OpenFrom, OpenTo, Capacity)
 VALUES
 (
