@@ -212,13 +212,256 @@ CREATE TABLE Reactions
 );
 
 
+
 -- Příkladová data
---INSERT INTO Cafés (Name, Address, OpenFrom, OpenTo, Capacity)
---VALUES
---(
---	'Mr. Nováks Super Coffee',
---	'Nějaká 23, Brno',
---	TO_TIMESTAMP('06:00','hh24:mi'),
---	TO_TIMESTAMP('20:00','hh24:mi'),
---	66
---);
+INSERT INTO Cafés (Name, Address, OpenFrom, OpenTo, Capacity, Description) VALUES (
+	'Mr. Nováks Super Coffee',
+	'Nějaká 23, Brno',
+	TO_TIMESTAMP('06:00','hh24:mi'),
+	TO_TIMESTAMP('20:00','hh24:mi'),
+	66,
+	'Na místě bývalé truhlárny jsme vytvořili prostor, který nám chyběl. Netradiční kavárnu, kde najdeš mnohem víc než jen výběrovou kávu, domácí dobroty a skvělé snídaně. Součástí je taky galerie, multifunkční místnost k pronájmu a dvůr, kde pod hvězdami a za doprovodu té správné melodie snadno ztratíš pojem o čase a zapomeneš, že jsi v centru města.'
+);
+INSERT INTO Cafés (Name, Address, OpenFrom, OpenTo, Capacity, Description) VALUES (
+	'Caffé 60',
+	'Purcnerova 60, 676 02 Moravské Budějovice',
+	TO_TIMESTAMP('08:00','hh24:mi'),
+	TO_TIMESTAMP('18:00','hh24:mi'),
+	66,
+	'Popis kavárny'
+);
+INSERT INTO Cafés (Name, Address, OpenFrom, OpenTo, Capacity, Description) VALUES (
+	'Kavárna Opera',
+	'Horní náměstí 21 779 00 Olomouc',
+	TO_TIMESTAMP('14:00','hh24:mi'),
+	TO_TIMESTAMP('21:00','hh24:mi'),
+	66,
+	'Jsme tradiční kavárna v samém centru města Olomouce.'
+);
+
+INSERT INTO CoffeeKinds (Name, OriginRegion , Quality , Description, StandardPrice ) VALUES (
+	'Espresso',
+	'Austrálie',
+	4,
+	'Popis',
+	69
+);
+INSERT INTO CoffeeKinds (Name, OriginRegion , Quality , Description, StandardPrice ) VALUES (
+	'Americano',
+	'USA',
+	4,
+	'Káva z Ameriky',
+	250
+);
+INSERT INTO CoffeeKinds (Name, OriginRegion , Quality , Description, StandardPrice ) VALUES (
+	'Cappucino',
+	'Francie',
+	4,
+	'Káva z Francie',
+	125
+);
+INSERT INTO CoffeeKinds (Name, OriginRegion , Quality , Description, StandardPrice ) VALUES (
+	'Ristretto',
+	'Belgie',
+	4,
+	'Káva z Belgie',
+	137
+);
+
+INSERT INTO CaféServesCoffee (CaféID,CoffeeID) VALUES (
+	1,
+	1
+);
+INSERT INTO CaféServesCoffee (CaféID,CoffeeID) VALUES (
+	1,
+	2
+);
+INSERT INTO CaféServesCoffee (CaféID,CoffeeID) VALUES (
+	1,
+	3
+);
+INSERT INTO CaféServesCoffee (CaféID,CoffeeID) VALUES (
+	2,
+	4
+);
+INSERT INTO CaféServesCoffee (CaféID,CoffeeID) VALUES (
+	2,
+	1
+);
+INSERT INTO CaféServesCoffee (CaféID,CoffeeID) VALUES (
+	3,
+	1
+);
+INSERT INTO CaféServesCoffee (CaféID,CoffeeID) VALUES (
+	3,
+	4
+);
+
+
+INSERT INTO CoffeeBeans (Variety  , Acidity  , Aroma , Flavor) VALUES (
+	'Bourbon',
+	'2',
+	'Aroma je kakaové, poznáte v něm cukrovou třtinu i koření.',
+	'Kakao, vanilka, koření, oříšky'
+);
+INSERT INTO CoffeeBeans (Variety  , Acidity  , Aroma , Flavor) VALUES (
+	'Typica',
+	'3',
+	'Aroma je kakaové.',
+	'Čokoláda, Ovoce'
+);
+INSERT INTO CoffeeBeans (Variety  , Acidity  , Aroma , Flavor) VALUES (
+	'Bourbon',
+	'1',
+	'Aroma je ořechové.',
+	'Čokoláda, Ořech'
+);
+INSERT INTO CoffeeBeans (Variety  , Acidity  , Aroma , Flavor) VALUES (
+	'Bourbon',
+	'2',
+	'Květinové aroma proložené vůní horských bylin.',
+	'Ovoce, ořechy, čokoláda'
+);
+
+
+INSERT INTO CoffeeBeansMixture (CoffeeId,BeanId) VALUES (
+	1,
+	2
+);
+INSERT INTO CoffeeBeansMixture (CoffeeId,BeanId) VALUES (
+	2,
+	1
+);
+INSERT INTO CoffeeBeansMixture (CoffeeId,BeanId) VALUES (
+	3,
+	4
+);
+INSERT INTO CoffeeBeansMixture (CoffeeId,BeanId) VALUES (
+	4,
+	3
+);
+
+INSERT INTO Users (Name, Email  , DailyCoffees  , FavouriteCoffeeKindID , FavouriteCaféID) VALUES (
+	'Michal Rivola',
+	'xrivol01@fit.vutbr.cz',
+	0,
+	2,
+	2
+);
+INSERT INTO Users (Name, Email  , DailyCoffees  , FavouriteCoffeeKindID , FavouriteCaféID) VALUES (
+	'Lubor Kříž',
+	'lubor@seznam.cz',
+	10,
+	2,
+	3
+);
+INSERT INTO Users (Name, Email  , DailyCoffees  , FavouriteCoffeeKindID , FavouriteCaféID) VALUES (
+	'Benjamin Flores',
+	'benjamin@google.com',
+	5,
+	3,
+	1
+);
+
+INSERT INTO Employees (Name, JobOccupation  , CaféID) VALUES (
+	'Michal Rivola',
+	'Manažer',
+	2
+);
+INSERT INTO Employees (Name, JobOccupation  , CaféID) VALUES (
+	'Čestmír Jelínek',
+	'Uklízeč',
+	3
+);
+INSERT INTO Employees (Name, JobOccupation  , CaféID) VALUES (
+	'Stanislava Pospíšilová',
+	'Servírka',
+	1
+);
+
+INSERT INTO CuppingEvents(Name,EventDate,Vacancies , CaféID ) VALUES (
+	'Oslava bodů z IDS',
+	TO_DATE('10/04/2021','dd/mm/yyyy'),
+	50,
+	3
+);
+INSERT INTO CuppingEvents(Name,EventDate,Vacancies , CaféID ) VALUES (
+	'Ochutnávka kávy',
+	TO_DATE('21/04/2021','dd/mm/yyyy'),
+	31,
+	2
+);
+
+
+INSERT INTO CuppingEventTastings(CuppingEventID ,CoffeeID ,TastingPrice ) VALUES (
+	1,
+	2,
+	0
+);
+INSERT INTO CuppingEventTastings(CuppingEventID ,CoffeeID ,TastingPrice ) VALUES (
+	2,
+	3,
+	45
+);
+
+INSERT INTO CuppingEventAttendees(CuppingEventID ,UserID ) VALUES (
+	1,
+	1
+);
+INSERT INTO CuppingEventAttendees(CuppingEventID ,UserID ) VALUES (
+	1,
+	3
+);
+INSERT INTO CuppingEventAttendees(CuppingEventID ,UserID ) VALUES (
+	1,
+	2
+);
+INSERT INTO CuppingEventAttendees(CuppingEventID ,UserID ) VALUES (
+	2,
+	2
+);
+INSERT INTO CuppingEventAttendees(CuppingEventID ,UserID ) VALUES (
+	2,
+	1
+);
+
+
+
+INSERT INTO Reviews(Text ,Stars , VisitDate ,  UserID ,CaféID , CuppingEventID ) VALUES (
+	'Úžasné',
+	5,
+	TO_DATE('10/04/2021','dd/mm/yyyy'),
+	2,
+	'',
+	1
+);
+INSERT INTO Reviews(Text ,Stars , VisitDate ,  UserID ,CaféID , CuppingEventID ) VALUES (
+	'Ušlo to',
+	3,
+	TO_DATE('21/04/2021','dd/mm/yyyy'),
+	3,
+	2,
+	''
+);
+INSERT INTO Reviews(Text ,Stars , VisitDate ,  UserID ,CaféID , CuppingEventID ) VALUES (
+	'Miererná obsluha,kafe i prostředí',
+	1,
+	TO_DATE('21/04/2021','dd/mm/yyyy'),
+	1,
+	'',
+	2
+);
+
+INSERT INTO Reactions(Text, WritenDate ,ThumbsUp,ThumbsDown, ReviewID  ,UserID  , EmployeeID  )
+VALUES
+(
+	'Děkujeme, snad nás brzy zase navštívíte',TO_DATE('25/04/2021','dd/mm/yyyy'),1,1,1,'',2
+
+);
+INSERT INTO Reactions(Text, WritenDate ,ThumbsUp,ThumbsDown, ReviewID  ,UserID  , EmployeeID  )
+VALUES
+(
+	'To nás mrzí, do příště to zkusíme vylepšit',TO_DATE('25/04/2021','dd/mm/yyyy'),1,0,3,'',2
+
+);
+
