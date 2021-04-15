@@ -294,9 +294,8 @@ INSERT INTO CaféServesCoffee (CaféID,CoffeeID) VALUES (
 );
 INSERT INTO CaféServesCoffee (CaféID,CoffeeID) VALUES (
 	3,
-	4
+	2
 );
-
 
 INSERT INTO CoffeeBeans (Variety  , Acidity  , Aroma , Flavor) VALUES (
 	'Bourbon',
@@ -364,6 +363,24 @@ INSERT INTO Users (Name, Email  , DailyCoffees  , FavouriteCoffeeKindID , Favour
 );
 
 INSERT INTO Employees (Name, JobOccupation  , CaféID) VALUES (
+	'Jose Hickman',
+	'Majitel',
+	1
+);
+
+INSERT INTO Employees (Name, JobOccupation  , CaféID) VALUES (
+	'Cara Berger',
+	'Majitel',
+	2
+);
+
+INSERT INTO Employees (Name, JobOccupation  , CaféID) VALUES (
+	'Jacqueline Holloway',
+	'Majitel',
+	3
+);
+
+INSERT INTO Employees (Name, JobOccupation  , CaféID) VALUES (
 	'Michal Rivola',
 	'Manažer',
 	2
@@ -426,7 +443,6 @@ INSERT INTO CuppingEventAttendees(CuppingEventID ,UserID ) VALUES (
 );
 
 
-
 INSERT INTO Reviews(Text ,Stars , VisitDate ,  UserID ,CaféID , CuppingEventID ) VALUES (
 	'Úžasné',
 	5,
@@ -452,16 +468,106 @@ INSERT INTO Reviews(Text ,Stars , VisitDate ,  UserID ,CaféID , CuppingEventID 
 	2
 );
 
+INSERT INTO Reviews(Text ,Stars , VisitDate ,  UserID ,CaféID , CuppingEventID ) VALUES (
+	'NOT GREAT NOT TERRIBLE',
+	2,
+	TO_DATE('18/04/2021','dd/mm/yyyy'),
+	1,
+	2,
+	''
+);
+INSERT INTO Reviews(Text ,Stars , VisitDate ,  UserID ,CaféID , CuppingEventID ) VALUES (
+	'Už sem zažil i lepší',
+	2,
+	TO_DATE('21/04/2021','dd/mm/yyyy'),
+	1,
+	1,
+	''
+);
+INSERT INTO Reviews(Text ,Stars , VisitDate ,  UserID ,CaféID , CuppingEventID ) VALUES (
+	'Radši mám cukrárnu',
+	4,
+	TO_DATE('21/04/2021','dd/mm/yyyy'),
+	1,
+	2,
+	''
+);
+
+
 INSERT INTO Reactions(Text, WritenDate ,ThumbsUp,ThumbsDown, ReviewID  ,UserID  , EmployeeID  )
 VALUES
 (
 	'Děkujeme, snad nás brzy zase navštívíte',TO_DATE('25/04/2021','dd/mm/yyyy'),1,1,1,'',2
-
 );
 INSERT INTO Reactions(Text, WritenDate ,ThumbsUp,ThumbsDown, ReviewID  ,UserID  , EmployeeID  )
 VALUES
 (
 	'To nás mrzí, do příště to zkusíme vylepšit',TO_DATE('25/04/2021','dd/mm/yyyy'),1,0,3,'',2
-
 );
 
+
+-- Cena ochutnávky kávy na cupping akci 'Oslava bodů z IDS' a běžná cena.
+SELECT CuppingEvents.Name, CoffeeKinds.Name, CuppingEventTastings.TastingPrice, CoffeeKinds.StandardPrice
+FROM CuppingEvents
+NATURAL JOIN CuppingEventTastings
+JOIN CoffeeKinds ON CoffeeKinds.CoffeeID = CuppingEventTastings.CoffeeID
+WHERE CuppingEventId =
+(
+	SELECT DISTINCT CuppingEvents.CuppingEventID
+	FROM CuppingEvents
+	WHERE CuppingEvents.NAME = 'Oslava bodů z IDS'
+);
+
+-- Uživatelé, kteří napsali recenzi
+SELECT Users.Name, Reviews.Text, Reviews.Stars
+FROM Users NATURAL JOIN Reviews;
+
+-- Jména a příjmení; a pozice zaměstanců kavárny 'Caffé 60'
+SELECT Employees.Name, Employees.JobOccupation
+FROM Employees JOIN Cafés ON Employees.CaféID = Cafés.CaféID
+WHERE Employees.CaféID =
+(
+	SELECT DISTINCT Cafés.CaféID
+	FROM Cafés
+	WHERE Cafés.Name = 'Caffé 60'
+);
+
+-- Druh kávy podle kávových zrn
+SELECT CoffeeKinds.Name, CoffeeBeans.Variety
+FROM CoffeeKinds 
+NATURAL JOIN CoffeeBeansMixture
+NATURAL JOIN CoffeeBeans;
+
+-- Počty zaměstanců na určitých pracovních pozicích.
+SELECT COUNT(EmployeeID), JobOccupation
+FROM Employees
+GROUP BY JobOccupation;
+
+-- Počet recenzí na kavárnu a její průměrné hodnocení. 
+SELECT Name, COUNT(ReviewID) TotalReviews, AVG(Stars) AverageStars
+FROM
+(
+	SELECT Cafés.Name, Reviews.ReviewID, Reviews.Stars
+	FROM Cafés NATURAL LEFT JOIN Reviews
+)
+GROUP BY Name;
+
+-- Všechny kavárny, které nemají žádné recenze.
+SELECT CaféID, Name
+FROM Cafés
+WHERE NOT EXISTS
+(
+	SELECT * FROM Reviews 
+	WHERE Reviews.CaféID = Cafés.CaféID
+);
+
+-- Používané druhy káv v kavárnách 'Caffé 60' a 'Kavárna opera'
+SELECT DISTINCT CoffeeKinds.Name, Cafés.Name
+FROM CoffeeKinds
+JOIN CaféServesCoffee ON CoffeeKinds.CoffeeID = CaféServesCoffee.CoffeeID
+JOIN Cafés ON CaféServesCoffee.CaféID = Cafés.CaféID
+WHERE Cafés.Name IN
+(
+	SELECT Name FROM Cafés
+	WHERE Name = 'Caffé 60' OR Name = 'Kavárna Opera'
+);
