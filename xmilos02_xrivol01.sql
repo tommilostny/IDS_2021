@@ -460,7 +460,7 @@ INSERT INTO Reviews(Text ,Stars , VisitDate ,  UserID ,CaféID , CuppingEventID 
 	''
 );
 INSERT INTO Reviews(Text ,Stars , VisitDate ,  UserID ,CaféID , CuppingEventID ) VALUES (
-	'Miererná obsluha,kafe i prostředí',
+	'Mizerná obsluha, kafe i prostředí',
 	1,
 	TO_DATE('21/04/2021','dd/mm/yyyy'),
 	1,
@@ -515,7 +515,7 @@ WHERE CuppingEventId =
 (
 	SELECT DISTINCT CuppingEvents.CuppingEventID
 	FROM CuppingEvents
-	WHERE CuppingEvents.NAME = 'Oslava bodů z IDS'
+	WHERE CuppingEvents.Name = 'Oslava bodů z IDS'
 );
 
 -- Uživatelé, kteří napsali recenzi
