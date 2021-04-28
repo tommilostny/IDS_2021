@@ -256,7 +256,8 @@ CREATE OR REPLACE PROCEDURE AddCuppingEventAttendee
 	(cuppingEventID IN NUMBER,
 	userID IN NUMBER) IS
 BEGIN
-  	INSERT INTO CuppingEventAttendees(CuppingEventID, UserID ) VALUES (
+  	INSERT INTO CuppingEventAttendees(CuppingEventID, UserID) VALUES 
+	(
 		cuppingEventID,
 		userID
 	);
@@ -476,12 +477,20 @@ INSERT INTO CuppingEventTastings(CuppingEventID ,CoffeeID ,TastingPrice ) VALUES
 );
 
 -- Cupping akce 1 má kapacitu míst 1
-EXEC AddCuppingEventAttendee(cuppingEventID => 1, userID => 1); -- Uživatel 1 je přidán v tabulce CuppingEventAttendees
-EXEC AddCuppingEventAttendee(cuppingEventID => 1, userID => 3); -- Nepřidá se vyhodí výjimku
-EXEC AddCuppingEventAttendee(cuppingEventID => 1, userID => 2); -- Nepřidá se vyhodí výjimku
+-- Uživatel 1 je přidán v tabulce CuppingEventAttendees
+EXEC AddCuppingEventAttendee(cuppingEventID => 1, userID => 1);
+-- Kapacita cupping akce 1 je nyní 0, neumožní přidání dalších účastníku
+
+-- Nepřidá se vyhodí výjimku
+EXEC AddCuppingEventAttendee(cuppingEventID => 1, userID => 3);
+
+-- Nepřidá se vyhodí výjimku
+EXEC AddCuppingEventAttendee(cuppingEventID => 1, userID => 2);
+
+-- Cupping akce 2 má kapacitu 31
 EXEC AddCuppingEventAttendee(cuppingEventID => 2, userID => 2);
 EXEC AddCuppingEventAttendee(cuppingEventID => 2, userID => 1);
-
+-- Účastníci vložení, kapacita cupping akce 2 je nyní 29
 
 INSERT INTO Reviews(Text ,Stars , VisitDate ,  UserID ,CaféID , CuppingEventID ) VALUES (
 	'Úžasné',
