@@ -1,3 +1,7 @@
+DROP MATERIALIZED VIEW AvailableCuppingEventsView;
+
+DROP INDEX CafésIndex;
+
 DROP TABLE Reactions;
 DROP TABLE Reviews;
 DROP TABLE CuppingEventAttendees;
@@ -252,15 +256,14 @@ END UserAttendsCuppingEventTrigger;
 /
 
 -- Přidá uživatele jako účastníka na cupping akci
-CREATE OR REPLACE PROCEDURE AddCuppingEventAttendee
-	(cuppingEventID IN NUMBER,
-	userID IN NUMBER) IS
+CREATE OR REPLACE PROCEDURE AddCuppingEventAttendee(cuppingEventID IN NUMBER, userID IN NUMBER) IS
 BEGIN
   	INSERT INTO CuppingEventAttendees(CuppingEventID, UserID) VALUES 
 	(
 		cuppingEventID,
 		userID
 	);
+	COMMIT;
 EXCEPTION
 	WHEN VALUE_ERROR THEN
 		ROLLBACK;
@@ -621,3 +624,44 @@ WHERE Cafés.Name IN
 	WHERE Name = 'Caffé 60' OR Name = 'Kavárna Opera'
 );
 
+
+-- Exaplain plan bez indexu
+EXPLAIN PLAN FOR
+SELECT Name, COUNT(ReviewID) TotalReviews, AVG(Stars) AverageStars
+FROM
+(
+	SELECT Cafés.Name, Reviews.ReviewID, Reviews.Stars
+	FROM Cafés NATURAL LEFT JOIN Reviews
+)
+GROUP BY Name;
+
+SELECT PLAN_TABLE_OUTPUT FROM TABLE(DBMS_XPLAN.DISPLAY());
+
+-- Index nad tabulkou kaváren podle jména
+CREATE INDEX CafésIndex 
+ON Cafés (Name);
+
+-- Exaplain plan s indexem
+EXPLAIN PLAN FOR
+SELECT Name, COUNT(ReviewID) TotalReviews, AVG(Stars) AverageStars
+FROM
+(
+	SELECT Cafés.Name, Reviews.ReviewID, Reviews.Stars
+	FROM Cafés NATURAL LEFT JOIN Reviews
+)
+GROUP BY Name;
+
+SELECT PLAN_TABLE_OUTPUT FROM TABLE(DBMS_XPLAN.DISPLAY());
+
+
+-- View s Cupping akcemi, kde je ještě volné místo
+CREATE MATERIALIZED VIEW AvailableCuppingEventsView AS
+	SELECT CuppingEventID, Name, EventDate, Vacancies
+	FROM CuppingEvents WHERE Vacancies > 0;
+
+-- Přidání přístupových práv k tabulkám a pohledu pro druhého člena týmu (XRIVOL01) z pohledu XMILOS02.
+GRANT ALL ON AvailableCuppingEventsView TO XRIVOL01;
+
+GRANT EXECUTE ON AddCuppingEventAttendee TO XRIVOL01;
+
+GRANT SELECT ON Users TO XRIVOL01;
